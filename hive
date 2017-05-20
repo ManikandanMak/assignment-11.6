@@ -1,0 +1,50 @@
+create table data1(id int,
+first_name string,
+last_name string,
+email string,
+gender string,
+ip_address string)
+row format delimited
+fields terminated by ',';
+ 
+load data local inpath '/home/acadgild/Downloads/dataset1.csv' into table data1;
+
+
+create table data2(id int,
+first_name string,
+last_name string) 
+row format delimited
+fields terminated by ',';
+
+
+
+load data local inpath '/home/acadgild/Downloads/dataset2.csv' into table data2;
+
+
+Bucket Map Join
+
+SET hive.optimize.bucketmapjoin=true;                                               
+SET hive.auto.convert.join=true;
+select data1.gender, data1.first_name from data1 INNER JOIN data2 ON data1.id=data2.id;
+
+
+SMB JOIN
+
+SET hive.enforce.sortmergebucketmapjoin=false;
+SET hive.auto.convert.sortmerge.join=true;
+SET hive.optimize.bucketmapjoin=true;                                               
+SET hive.optimize.bucketmapjoin.sortedmerge=true;                                               
+SET hive.auto.convert.join=false;
+select data1.id , data1.ip_address from data1 INNER JOIN data2 ON data1.id=data2.id;
+
+SMBM JOIN
+
+SET hive.enforce.sortmergebucketmapjoin=false;
+SET hive.auto.convert.sortmerge.join=true;
+SET hive.optimize.bucketmapjoin=true;                                               
+SET hive.optimize.bucketmapjoin.sortedmerge=true;                                               
+select data1.id , data1.ip_address from data1 INNER JOIN data2 ON data1.id=data2.id;
+
+LEFT SEMI JOIN
+
+select data1.id,data1.first_name,data1.gender from data1 LEFT SEMI JOIN data2 ON data1.id=data2.id;
